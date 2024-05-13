@@ -1,32 +1,929 @@
-# Prerequisites
-*.d
+//Submitted by Saad salman & Talha Soomro
+//roll:23i-6082 Talha soomro
+//roll:23i-6031 Saad salma
+//section:B
+//Batch:2023
+#include <iostream>
+#include <string>
+#include <iomanip>
+using namespace std;
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+const int Max_Customers = 30;
+const int MAX_MENU_ITEMS = 30;
+const int tax_rate = 10;
+const int service_rate = 10;
 
-# Precompiled Headers
-*.gch
-*.pch
+int Start_Window();
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+int Create_Account();
 
-# Fortran module files
-*.mod
-*.smod
+int Display();
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+int Edit_Item8();
 
-# Executables
-*.exe
-*.out
-*.app
+int displayMenu();
+
+int Place_Order();
+
+int Pay_Bill(float total);
+
+int View_Orders8();
+
+int Calculate_Revenue8();
+
+int Account_Login();
+
+int Admin_Account();
+
+void addItem();
+
+void updateItem();
+
+void deleteItem();
+
+void UpdateStock();
+
+void displaymenu_admin();
+
+
+string customer_username[Max_Customers] = {"saad"};
+string customer_password[Max_Customers] = {"salman"};
+string customer_name[Max_Customers] = {};
+string customer_contact[Max_Customers] = {};
+string admin_username = "talha";
+string admin_password = "soomro";
+
+string menu_item[MAX_MENU_ITEMS] = { "Pizza", "Burger", "Rolls", "Ice cream", "Milkshake",
+                                "Pasta", "Sandwich", "Salad", "Soda", "Coffee",
+                                "Tea", "Soup", "Smoothie", "Chicken Wings", "Nachos",
+                                "Fries", "Tacos", "Burrito", "Sushi", "Dessert" };
+
+float menu_price[MAX_MENU_ITEMS] = { 499, 499, 199, 249, 349,
+                                599, 399, 199, 149, 199,
+                                49, 149, 249, 349, 299,
+                                99, 199, 249, 299, 449 };
+
+float customer_balance[Max_Customers] = {};
+
+int quantities[MAX_MENU_ITEMS] = {};
+                        
+int stock[MAX_MENU_ITEMS] = { 10, 19, 10,
+                              10, 10, 11,
+                              17, 15, 10,
+                              10, 30, 21,
+                              14, 10, 32,
+                              10, 7, 10,
+                              10, 20 };
+
+
+int available_slots = 0;
+
+int menuSize = 20;
+
+int current_reg_num;
+
+float g_total = 0;
+
+
+int main()
+{
+    
+    int opt = 0;
+    
+    while (opt == 0)
+    {
+        opt = 0;
+
+        opt = Start_Window();
+
+        if (opt == 1)
+        {
+            if (available_slots < Max_Customers)
+            {
+                opt = Create_Account();
+                available_slots++;
+            }
+
+            else
+            {
+                cout << " Sorry, no more slots available for new accounts.\n";
+                opt = '0';
+            }
+        }
+
+        else if (opt == 2)
+        {
+            opt = Account_Login();
+        
+        }
+
+        while (opt == 1 || opt == 2)
+        {
+            if (opt == 1)
+            {
+                opt = Display();
+            }
+            
+            if (opt == 2)
+            {
+                opt = displayMenu();
+            }
+
+        }
+
+        if (opt == 3)
+        {
+            opt = Admin_Account();
+        
+            while (opt == 1 || opt == 2)
+            {
+                if (opt == 1)
+                {
+                    opt = Edit_Item8();
+                }
+
+                if (opt == 2)
+                {
+                    opt = View_Orders8();
+                }
+
+                if (opt == 3)
+                {
+                    opt = Calculate_Revenue8();
+                }
+            }
+        }
+    }
+	
+    return 0;
+}
+
+int Start_Window()
+{
+
+    int opt = 0;
+
+    cout << "\n \t\t\t\t\t\t\t Welcome To TS FLAMES\n";
+    cout << "\n To create account press 1";
+    cout << "\n To login press 2";
+    cout << "\n For admin login press 3";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 1 && opt != 2 && opt != 3)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+
+}
+
+int Create_Account()
+{
+    int opt = 0;
+    string UN = "\0";
+    string pass = "\0";
+    int reg_num = -1;
+    bool repeat = true;
+
+    while (repeat)
+    {
+        reg_num = -1;
+        repeat = false;
+
+        cout << "\n Enter Username: ";
+        cin >> ws;
+        getline(cin, UN);
+
+        while (UN == "" || UN == " ")
+        {
+            cout << " Invalid Username. Please try again.\n";
+            cout << "\n Enter Username: ";
+            cin >> ws;
+            getline(cin, UN);
+        }
+
+        for (int i = 0; i < Max_Customers; i++)
+        {
+            if (customer_username[i].empty())
+            {
+                reg_num = i;
+                break;
+            }
+
+            if (UN == customer_username[i])
+            {
+                cout << " This Username is already in use. Please try again.\n";
+                cout << "\n To try again press 1";
+                cout << "\n To go back to start window press 0";
+                cout << "\n\n Option: ";
+                cin >> opt;
+                
+                while (opt != 0 && opt != 1)
+                {
+                    cout << " Invalid option.Please try again";
+                    cout << "\n\n Option: ";
+                    cin >> opt;
+                }
+
+                if (opt == 0)
+                {
+                    return opt;
+                }
+                repeat = true;
+                break;
+            }
+        }
+    }
+
+    cout << " Enter Password: ";
+            cin >> ws;
+                getline(cin, pass);
+
+        while (pass == "" || pass == " ")
+        {
+            cout << " Invalid Password. Please try again.\n";
+            cout << "\n Enter Password: ";
+                cin >> ws;
+                    getline(cin, pass);
+        }
+
+
+    customer_username[reg_num] = UN;
+    customer_password[reg_num] = pass;
+    current_reg_num = reg_num;
+
+    cout << "\n\n\t\t\t Thank you for making an account at TS Flames.";
+    cout << "\n\n Your registeration number is: " << reg_num;
+    cout << "\n\n\n Please enter your contact information.";
+
+    cout << "\n\n Name: ";
+    getline(cin, customer_name[reg_num]);
+
+    cout << " Phone number: ";
+    cin >> ws;
+    getline(cin, customer_contact[reg_num]);
+
+    cout << "\n How much would you like to deposit into your account: ";
+    cout << "\n PKR ";
+    cin >> ws;
+    cin >> customer_balance[reg_num];
+
+    cout << "\n\n To go back to start window press 0";
+    cout << "\n To view profile press 1";
+    cout << "\n To view menue press 2";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 0 && opt != 1 && opt != 2)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+
+}
+
+int Account_Login()
+{
+    bool valid = false;
+    int attempts = 5;
+    int opt = -1;
+
+    while (!valid && attempts > 0)
+    {
+        cout << "\n Enter Username: ";
+        string UN;
+        cin >> ws;
+        getline(cin, UN);
+
+        cout << " Enter Password: ";
+        string pass;
+        getline(cin, pass);
+
+        for (int i = 0; i < Max_Customers; i++)
+        {
+            if (UN == customer_username[i] && pass == customer_password[i])
+            {
+                valid = true;
+                current_reg_num = i;
+                break;
+            }
+        }
+
+        if (!valid)
+        {
+            attempts--;
+            cout << " Wrong Password or username. " << attempts << " attempts remaining.\n";
+            cout << "\n To try again press 1";
+            cout << "\n To go back to start window press 0";
+            cout << "\n\n Option: ";
+            cin >> opt;
+
+            while (opt != 0 && opt != 1)
+            {
+                cout << " Invalid option.Please try again";
+                cout << "\n\n Option: ";
+                cin >> opt;
+            }
+        }
+
+        if (opt == 0)
+        {
+            return opt;
+        }
+    }
+
+    if (valid)
+    {
+        cout << "\n Login successful!\n";
+
+        cout << "\n\n To go back to start window press 0";
+        cout << "\n To view profile press 1";
+        cout << "\n To view menue press 2";
+        cout << "\n\n Option: ";
+        cin >> opt;
+
+        while (opt != 0 && opt != 1 && opt != 2)
+        {
+            cout << " Invalid option.Please try again";
+            cout << "\n\n Option: ";
+            cin >> opt;
+        }
+    }
+    else
+    {
+        cout << "\n Login failed. Account locked.\n";
+        opt = 0;
+    }
+
+    return opt;
+
+}
+
+int Display()
+{
+    int opt = 0;
+    
+    cout << "\n\n Registeration number: ";
+    cout << current_reg_num;
+    
+    cout << "\n\n Username: ";
+    cout << customer_username[current_reg_num];
+    cout << "\n Password: ";
+    cout << customer_password[current_reg_num];
+    
+    cout << "\n\n name: ";
+    cout << customer_name[current_reg_num];
+    cout << "\n Phone no. ";
+    cout << customer_contact[current_reg_num];
+    
+    cout << "\n\n Balance: ";
+    cout << customer_balance[current_reg_num];
+    
+    cout << "\n\n To go back to start window press 0";
+    cout << "\n To view menue press 2";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 0 && opt != 2)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+}
+
+int Place_Order() {
+
+    float total = 0.0;
+    int opt = 0;
+
+    int number[MAX_MENU_ITEMS] = {};
+
+    while (true) {
+
+        cout << " Enter the item number to add (or 0 to Finalize): ";
+        int option;
+        cin >> option;
+
+        if (option >= 1 && option <= menuSize) 
+        {
+            cout << "\t\t     " << menu_item[option - 1] << endl << endl;
+
+            cout << " Enter the quantity: ";
+            int quantity;
+            cin >> quantity;
+
+            while (stock[option - 1] < quantity)
+            {
+                cout << " " << menu_item[option - 1] << "(s) in stock: " << stock[option - 1];
+                cout << "\n\n Enter the quantity: ";
+                cin >> quantity;
+            }
+
+            number[option - 1] += quantity;
+            total += quantity * menu_price[option - 1];
+
+            cout << "\n Added " << quantity << " " << menu_item[option - 1] << "(s) to your order." << endl;
+        }
+        else if (option == 0) 
+        {
+            break;
+        }
+        else {
+            cout << " Invalid option. Choose from 1 to " << menuSize << " or enter 0 to Finalize." << endl;
+        }
+    }
+
+    cout << "\n Calculating total price..." << endl;
+
+    cout << "\n Your Order:" << endl;
+    
+    for (int i = 0; i < menuSize; ++i) 
+    {
+        if (number[i] > 0) 
+        {
+            cout << " " << number[i] << " " << menu_item[i] << "(s) - Price: " << total << "Rs" << endl;
+        }
+    }
+
+    cout << "\n Tax: " << (total/100 * tax_rate);
+    cout << "\n Service Charges: " << (total / 100 * service_rate);
+    total += (total / 100 * tax_rate) + (total / 100 * service_rate);
+
+    opt = Pay_Bill(total);
+
+    if (opt == 1)
+    {
+        for (int i = 0; i < Max_Customers; i++)
+        {
+            quantities[i] += number[i];
+            stock[i] -= number[i];
+        }
+
+        g_total += total;
+
+        cout << "\n\n Your order has been placed.";
+
+    }
+
+    if (opt == 2)
+    {
+        cout << "\n Order cancelled.";
+    }
+
+    cout << "\n\n To go back to start window press 0";
+    cout << "\n To view profile press 1";
+    cout << "\n To view menu press 2";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 0 && opt != 1 && opt != 2)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+}
+
+int displayMenu()
+{
+    
+    int opt = 0;
+    
+    cout << "\t\t\t\t\t\t   ________" << endl;
+    cout << "\t\t\t\t\t\t     MENU " << endl;
+    cout << "\t\t\t\t\t\t   --------" << endl;
+    cout << "\t\t________________________________________________________________________" << endl;
+    cout << "\t\t" << setw(40) << left << "Item" << setw(10) << "#no" << "\t \t   Price" << endl;
+    cout << "\t\t------------------------------------------------------------------------" << endl;
+    for (int i = 0; i < menuSize; ++i) 
+    {
+        cout << "\t\t" << setw(40) << left << menu_item[i] << setw(10) << i + 1 << "\t\t  " << menu_price[i] << "Rs" << endl;
+    }
+
+    cout << "\t\t------------------------------------------------------------------------" << endl;
+
+    cout << "\n\n To go back to start window press 0";
+    cout << "\n To view profile press 1";
+    cout << "\n To place order press 2";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 0 && opt != 1 && opt != 2)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    if (opt == 2)
+    {
+        opt = Place_Order();
+    }
+
+    return opt;
+}
+
+int Pay_Bill(float total)
+{
+    int opt = 0;
+    bool flag = false;
+    float left = 0;
+
+    while (!flag)
+    {
+        left = customer_balance[current_reg_num] - total;
+        cout << "\n Total Price: " << total << "rs" << endl;
+        cout << "\n Your old Balance: ";
+        cout << customer_balance[current_reg_num];
+        cout << "\n Your new Balance: ";
+        cout << left;
+
+        if (customer_balance[current_reg_num] < total)
+        {
+            cout << "\n You have insufficent balance for this order";
+            cout << "\n\n To deposit press 1";
+            cout << "\n To cancel order press 2";
+            cout << "\n\n Option: ";
+            cin >> opt;
+
+            while (opt != 1 && opt != 2)
+            {
+                cout << " Invalid option.Please try again";
+                cout << "\n\n Option: ";
+                cin >> opt;
+            }
+
+            if (opt == 1)
+            {
+                int in;
+                cout << "\n How much would you like to deposit into your account: ";
+                cout << "\n PKR ";
+                cin >> ws;
+                cin >> in;
+                customer_balance[current_reg_num] = customer_balance[current_reg_num] + in;
+            }
+        }
+
+        else
+        {
+            flag = true;
+        }
+    }
+
+    if (opt != 2)
+    {
+        cout << "\n\n To Confirm order press 1";
+        cout << "\n To cancel order press 2";
+        cout << "\n\n Option: ";
+        cin >> opt;
+
+        while (opt != 1 && opt != 2)
+        {
+            cout << " Invalid option.Please try again";
+            cout << "\n\n Option: ";
+            cin >> opt;
+        }
+
+        if (opt == 1)
+        {
+            customer_balance[current_reg_num] = customer_balance[current_reg_num] - total;
+        }
+
+        return opt;
+
+    }
+}
+
+int Admin_Account()
+{
+    bool valid = false;
+    int attempts = 5;
+    int opt = 0;
+
+    while (!valid && attempts > 0)
+    {
+        cout << "\n Enter Username: ";
+        string UN;
+        cin >> ws;
+        getline(cin, UN);
+
+        cout << " Enter Password: ";
+        string pass;
+        getline(cin, pass);
+
+
+
+        if (UN == admin_username && pass == admin_password)
+        {
+            valid = true;
+            break;
+        }
+
+        else
+        {
+            attempts--;
+            cout << " Wrong Password or username. " << attempts << " attempts remaining.\n";
+            cout << "\n To try again press 1";
+            cout << "\n To go back to start window press 0";
+            cout << "\n\n Option: ";
+            cin >> opt;
+        }
+
+        while (opt != 0 && opt != 1)
+        {
+            cout << " Invalid option.Please try again";
+            cout << "\n\n Option: ";
+            cin >> opt;
+        }
+        
+        if (opt == 0)
+        {
+            return opt;
+        }
+    }
+
+    if (valid)
+    {
+        cout << "\n Login successful!\n";
+
+        cout << "\n\n To go back to start window press 0";
+        cout << "\n To edit menu press 1";
+        cout << "\n To view orders press 2";
+        cout << "\n To calculate revenue press 3";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    } 
+    
+    else
+    {
+        cout << "\n Login failed. Account locked.\n";
+        opt = 0;
+    }
+
+    while (opt != 0 && opt != 1 && opt != 2 && opt != 3)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+}
+
+void addItem() 
+{
+    if (menuSize < MAX_MENU_ITEMS)  
+    {
+        cout << "Enter item name: ";
+        cin >> menu_item[menuSize];  
+        cout << "Enter item price: ";
+        cin >> menu_price[menuSize];
+        ++menuSize;
+        cout << "Item added to the menu." << endl;
+    }
+    else {
+        cout << "Menu is full. Cannot add more items." << endl;
+    }
+}
+
+void updateItem() {
+    int index;
+    cout << " Enter the item number to update: ";
+    cin >> index;
+
+    if (index >= 1 && index <= menuSize) {
+        cout << "Enter new name: ";
+        cin >> menu_item[index - 1];
+        cout << "Enter new price: ";
+        cin >> menu_price[index - 1];
+        cout << "Item updated." << endl;
+    }
+    else {
+        cout << "Invalid item number." << endl;
+    }
+}
+
+void deleteItem() {
+    int index;
+    cout << " Enter the item number to delete: ";
+    cin >> index;
+
+    if (index >= 1 && index <= menuSize) {
+        for (int i = index - 1; i < menuSize - 1; ++i) {
+            menu_item[i] = menu_item[i + 1];
+            menu_price[i] = menu_price[i + 1];
+        }
+        --menuSize;
+        cout << " Item deleted." << endl;
+    }
+    else {
+        cout << " Invalid item number." << endl;
+    }
+}
+
+int Edit_Item8() 
+{
+    int choice;
+    int opt = 0;
+
+    do {
+        cout << "\n 1. Display Menu" << endl;
+        cout << " 2. Add Item" << endl;
+        cout << " 3. Update Item" << endl;
+        cout << " 4. Delete Item" << endl;
+        cout << " 5. Update Stock" << endl;
+        cout << " 6. Exit" << endl;
+        cout << " Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            displaymenu_admin();
+            break;
+        case 2:
+            addItem();
+            break;
+        case 3:
+            updateItem();
+            break;
+        case 4:
+            deleteItem();
+            break;
+        case 5:
+            UpdateStock();
+            break;
+        case 6:
+            cout << " Exiting." << endl;
+            break;
+        default:
+            cout << " Invalid Input. Please try again." << endl;
+        }
+
+    } while (choice != 6);
+
+    cout << "\n\n To go back to start window press 0";
+    cout << "\n To view orders press 2";
+    cout << "\n To calculate revenew press 3";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 0 && opt != 2 && opt != 3)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+}
+
+void UpdateStock()
+{
+    int index;
+    cout << " Enter the item number to update: ";
+    cin >> index;
+
+    if (index >= 1 && index <= menuSize) {
+        cout << " Enter new Stock: ";
+        cin >> stock[index - 1];
+    }
+    else {
+        cout << " Invalid item number." << endl;
+    }
+}
+
+int View_Orders8()
+{
+
+    int opt = 0;
+
+    cout << "\n\n Orders: \n";
+    
+    for (int i = 0; i < menuSize; i++)
+    {
+        if (quantities[i] > 0) 
+        {
+            cout << " " << quantities[i] << " " << menu_item[i] << "(s) - Price: " << quantities[i] * menu_price[i] << "Rs" << endl;
+        }
+    }
+
+    while (opt != 2)
+    {
+        cout << "\n\n To clear orders press 1";
+        cout << "\n otherwise press 2";
+        cout << "\n\n Option: ";
+        cin >> opt;
+
+        if (opt == 1)
+        {
+            int index;
+            int quantity = 0;
+            displaymenu_admin();
+
+            cout << " Enter the item number to update: ";
+            cin >> index;
+
+            cout << " Enter the Quantity: ";
+            cin >> quantity;
+
+            quantities[index - 1] -= quantity;
+        }
+    }
+    
+    cout << "\n\n To go back to start window press 0";
+    cout << "\n To edit menu press 1";
+    cout << "\n Calculate revenue press 3;";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 0 && opt != 1 && opt != 3)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+}
+
+void displaymenu_admin() {
+
+
+
+    char opt = 0;
+
+    cout << "\t\t\t\t\t\t   ________" << endl;
+    cout << "\t\t\t\t\t\t     MENU " << endl;
+    cout << "\t\t\t\t\t\t   --------" << endl;
+    cout << "\t\t_____________________________________________________________________________________________________" << endl;
+    cout << "\t\t" << setw(40) << left << "Item" << setw(10) << "#no" << "\t \t   Price" << "\t\t \tStock" << endl;
+    cout << "\t\t-----------------------------------------------------------------------------------------------------" << endl;
+    for (int i = 0; i < menuSize; ++i)
+    {
+        cout << "\t\t" << setw(40) << left << menu_item[i] << setw(10) << i + 1 << "\t\t  " << menu_price[i] << "Rs\t\t\t\t" << stock[i] << endl;
+    }
+    cout << "\t\t------------------------------------------------------------------------------------------------------" << endl;
+
+
+
+}
+
+int Calculate_Revenue8() 
+{
+    int opt = 0;
+    float other = 0.0;
+    float total = 0.0;
+    
+    cout << "\n\n Grand Total: ";
+    cout << g_total;
+    cout << " only.";
+
+    cout << "\n\n Service Charges: ";
+    cout << (g_total / 100 * service_rate);
+    cout << " only.";
+
+    cout << "\n\n Taxes: ";
+    cout << (g_total / 100 * tax_rate);
+    cout << " only.";
+
+    total = (g_total / 100 * (100 - tax_rate - service_rate));
+    
+    cout << "\n\n Total: ";
+    cout << total;
+    cout << " only.";
+
+    cout << "\n Enter other expences: ";
+    cin >> other;
+
+    cout << "\n\n Revenue generated: " << (total - other);
+
+    cout << "\n\n To go back to start window press 0";
+    cout << "\n To edit menu press 1";
+    cout << "\n To view orders press 2";
+    cout << "\n\n Option: ";
+    cin >> opt;
+
+    while (opt != 0 && opt != 1 && opt != 2)
+    {
+        cout << " Invalid option.Please try again";
+        cout << "\n\n Option: ";
+        cin >> opt;
+    }
+
+    return opt;
+    
+}
+
+
